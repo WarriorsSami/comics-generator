@@ -1,12 +1,11 @@
-import os
+import shutil
 import tkinter as tk
 from tkinter import filedialog, messagebox
 from tkinter import ttk
-
 import cv2
 
 from comics_generator import generate_video
-from settings import TEMP_PATH
+from settings import PREVIEW_TEMP_FILE
 
 def preview_video(lines):
     progress_window = tk.Toplevel()
@@ -15,10 +14,10 @@ def preview_video(lines):
     progress.pack(pady=20, padx=20)
     progress_window.update()
 
-    generate_video(lines, TEMP_PATH, progress)
+    generate_video(lines, PREVIEW_TEMP_FILE.name, progress)
     progress_window.destroy()
 
-    cap = cv2.VideoCapture(TEMP_PATH)
+    cap = cv2.VideoCapture(PREVIEW_TEMP_FILE.name)
     while cap.isOpened():
         ret, frame = cap.read()
         if not ret:
@@ -38,8 +37,8 @@ def save_video(lines):
         progress.pack(pady=20, padx=20)
         progress_window.update()
 
-        generate_video(lines, TEMP_PATH, progress)
-        os.rename(TEMP_PATH, save_path)
+        generate_video(lines, PREVIEW_TEMP_FILE.name, progress)
+        shutil.copy(PREVIEW_TEMP_FILE.name, save_path)
         progress_window.destroy()
 
         messagebox.showinfo("Success", f"Video saved to {save_path}")
